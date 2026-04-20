@@ -35,3 +35,7 @@ group :test do
   gem "capybara"
   gem "selenium-webdriver"
 end
+
+group :production do
+  gem 'rack-timeout'   # prevents hung requests
+end
