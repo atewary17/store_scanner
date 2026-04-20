@@ -1,0 +1,8 @@
+# app/views/admin/exports/excel.xlsx.axlsx
+wb = xlsx_package.workbook
+wb.add_worksheet(name: "Products") do |sheet|
+  sheet.add_row ['Barcode','Name','Brand','Category','Sub-Category','Unit','Description','Source']
+  @products.each do |p|
+    sheet.add_row [p.barcode, p.name, p.brand, p.category, p.sub_category, p.unit, p.description, p.source]
+  end
+end

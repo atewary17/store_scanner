@@ -1,0 +1,2 @@
+module ScanSessionsHelper
+end

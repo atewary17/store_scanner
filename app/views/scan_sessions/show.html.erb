@@ -1,0 +1,218 @@
+<%# app/views/scan_sessions/show.html.erb %>
+<div class="min-h-screen bg-gray-900 text-white flex flex-col"
+     data-session-id="<%= @scan_session.id %>">
+
+  <%# Header %>
+  <div class="px-4 py-3 bg-gray-800 flex justify-between items-center">
+    <%= link_to root_path, class: "text-gray-400 text-sm" do %>← Exit<% end %>
+    <div class="text-center">
+      <p class="font-semibold text-sm"><%= @scan_session.name %></p>
+      <p class="text-xs text-gray-400"><%= @scan_session.location %></p>
+    </div>
+    <span class="bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded-full">
+      <%= @scan_session.scan_items.count %> items
+    </span>
+  </div>
+
+  <%# Camera Viewfinder %>
+  <div class="relative flex-1 bg-black" id="scanner-container">
+    <video id="scanner-video" class="w-full h-64 object-cover" autoplay playsinline></video>
+
+    <%# Scanning overlay %>
+    <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+      <div class="w-64 h-32 border-2 border-blue-400 rounded-lg relative">
+        <div class="absolute top-0 left-0 w-6 h-6 border-t-4 border-l-4 border-blue-400 rounded-tl"></div>
+        <div class="absolute top-0 right-0 w-6 h-6 border-t-4 border-r-4 border-blue-400 rounded-tr"></div>
+        <div class="absolute bottom-0 left-0 w-6 h-6 border-b-4 border-l-4 border-blue-400 rounded-bl"></div>
+        <div class="absolute bottom-0 right-0 w-6 h-6 border-b-4 border-r-4 border-blue-400 rounded-br"></div>
+        <div id="scan-line" class="absolute top-0 left-0 right-0 h-0.5 bg-blue-400 animate-bounce"></div>
+      </div>
+      <p id="scan-status" class="text-blue-300 text-sm mt-3">Point camera at barcode or QR</p>
+    </div>
+  </div>
+
+  <%# Action Buttons %>
+  <div class="px-4 py-4 flex gap-3">
+    <button id="btn-scan" onclick="startScanning()"
+            class="flex-1 bg-blue-600 py-3 rounded-xl font-semibold text-sm">
+      📷 Scan Barcode
+    </button>
+    <button onclick="stopScanning()"
+            class="bg-gray-700 px-4 py-3 rounded-xl font-semibold text-sm">
+      ⏹ Stop
+    </button>
+    <%= link_to new_product_path(session_id: @scan_session.id),
+          class: "bg-gray-700 px-4 py-3 rounded-xl font-semibold text-sm" do %>
+      ✏️ Manual
+    <% end %>
+  </div>
+
+  <%# Result Panel (hidden until scan) %>
+  <div id="result-panel" class="hidden px-4 pb-4">
+    <div class="bg-gray-800 rounded-xl p-4 space-y-3">
+      <div class="flex justify-between">
+        <p class="text-xs text-gray-400 uppercase font-semibold">Scanned Barcode</p>
+        <span id="result-source"
+              class="text-xs bg-green-700 text-green-200 px-2 py-0.5 rounded-full"></span>
+      </div>
+      <p id="result-barcode" class="font-mono text-yellow-400 text-sm"></p>
+      <div id="result-fields" class="space-y-2"></div>
+
+      <%# OCR Photo trigger (shown when APIs fail) %>
+      <div id="ocr-section" class="hidden border-t border-gray-700 pt-3">
+        <p class="text-sm text-orange-400 mb-2">⚠️ Not found in any database</p>
+        <button onclick="captureForOCR()"
+                class="w-full bg-orange-600 py-2 rounded-lg text-sm font-semibold">
+          📷 Photograph Label for OCR
+        </button>
+        <input type="file" id="ocr-file-input" accept="image/*" capture="environment"
+               class="hidden" onchange="handleOCRPhoto(event)">
+      </div>
+
+      <%# Save button %>
+      <div id="save-section" class="hidden pt-2">
+        <button onclick="saveProduct()"
+                class="w-full bg-green-600 py-3 rounded-xl font-bold">
+          ✅ Save to Catalogue
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <%# Recently scanned in this session %>
+  <div class="px-4 pb-6">
+    <h3 class="text-xs text-gray-500 uppercase font-semibold mb-2">This Session</h3>
+    <div id="session-items" class="space-y-2">
+      <% @scan_session.scan_items.includes(:product).order(created_at: :desc).each do |item| %>
+        <div class="bg-gray-800 rounded-lg px-3 py-2 flex items-center gap-2">
+          <span class="text-lg"><%= product_emoji(item.product.category) %></span>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-medium truncate"><%= item.product.name %></p>
+            <p class="text-xs text-gray-500"><%= item.product.brand %></p>
+          </div>
+          <span class="text-xs text-gray-500 font-mono">
+            <%= item.product.barcode&.last(6) %>
+          </span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>
+<%# Approval / Manual Entry Slide-up Panel %>
+<div id="approval-panel"
+     class="hidden fixed inset-0 bg-black bg-opacity-60 z-50 flex items-end">
+  <div class="bg-gray-900 w-full rounded-t-2xl p-5 max-h-[85vh] overflow-y-auto">
+
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="font-bold text-white text-lg">Review & Save Product</h2>
+      <button onclick="closeApproval()" class="text-gray-400 text-2xl leading-none">×</button>
+    </div>
+
+    <%# Source badge %>
+    <div class="mb-4">
+      <span id="approval-source-badge"
+            class="text-xs font-bold px-3 py-1 rounded-full bg-gray-700 text-gray-300">
+        Source: —
+      </span>
+    </div>
+
+    <%# Editable fields %>
+    <div class="space-y-3">
+
+      <div>
+        <label class="text-xs text-gray-400 uppercase block mb-1">Barcode *</label>
+        <input id="field-barcode" type="text" readonly
+               class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2
+                      text-yellow-400 font-mono text-sm">
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-400 uppercase block mb-1">Product Name *</label>
+        <input id="field-name" type="text"
+               placeholder="e.g. Apex Exterior Emulsion"
+               class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-400 uppercase block mb-1">Brand</label>
+        <input id="field-brand" type="text"
+               placeholder="e.g. Asian Paints"
+               class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-gray-400 uppercase block mb-1">Category</label>
+          <select id="field-category"
+                  class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+            <option value="">— Select —</option>
+            <option>Paint</option>
+            <option>Hardware</option>
+            <option>Cement</option>
+            <option>Electrical</option>
+            <option>Plumbing</option>
+            <option>Tools</option>
+            <option>Adhesive</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 uppercase block mb-1">Sub-Category</label>
+          <input id="field-sub-category" type="text"
+                 placeholder="e.g. Wall Paint"
+                 class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="text-xs text-gray-400 uppercase block mb-1">Unit / Size</label>
+          <input id="field-unit" type="text"
+                 placeholder="e.g. 20 Ltr"
+                 class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2 text-white">
+        </div>
+        <div>
+          <label class="text-xs text-gray-400 uppercase block mb-1">Barcode Type</label>
+          <input id="field-barcode-type" type="text" readonly
+                 class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2
+                        text-gray-400 text-sm">
+        </div>
+      </div>
+
+      <div>
+        <label class="text-xs text-gray-400 uppercase block mb-1">Description</label>
+        <textarea id="field-description" rows="2"
+                  placeholder="Optional product notes…"
+                  class="w-full bg-gray-800 border border-gray-600 rounded-lg px-3 py-2
+                         text-white text-sm"></textarea>
+      </div>
+
+      <%# OCR photo trigger (shown when no data found) %>
+      <div id="ocr-trigger" class="hidden">
+        <p class="text-xs text-orange-400 mb-2">
+          ⚠️ Not found in any database. Photograph the label to extract details automatically.
+        </p>
+        <button onclick="captureForOCR()"
+                class="w-full bg-orange-600 text-white py-2 rounded-lg text-sm font-semibold">
+          📷 Use Google Vision OCR
+        </button>
+        <input type="file" id="ocr-file-input" accept="image/*" capture="environment"
+               class="hidden" onchange="handleOCRPhoto(event)">
+      </div>
+
+    </div>
+
+    <%# Save / Skip buttons %>
+    <div class="mt-5 space-y-2">
+      <button id="btn-save" onclick="saveProduct()"
+              class="w-full bg-green-600 text-white py-3 rounded-xl font-bold text-base">
+        ✅ Save to Catalogue
+      </button>
+      <button onclick="closeApproval()"
+              class="w-full bg-gray-700 text-gray-300 py-2 rounded-xl text-sm">
+        Skip this item
+      </button>
+    </div>
+
+  </div>
+</div>

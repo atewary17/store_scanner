@@ -1,0 +1,28 @@
+require "test_helper"
+
+class ScanSessionsControllerTest < ActionDispatch::IntegrationTest
+  test "should get index" do
+    get scan_sessions_index_url
+    assert_response :success
+  end
+
+  test "should get new" do
+    get scan_sessions_new_url
+    assert_response :success
+  end
+
+  test "should get create" do
+    get scan_sessions_create_url
+    assert_response :success
+  end
+
+  test "should get show" do
+    get scan_sessions_show_url
+    assert_response :success
+  end
+
+  test "should get summary" do
+    get scan_sessions_summary_url
+    assert_response :success
+  end
+end

@@ -1,0 +1,32 @@
+<%# app/views/scan_sessions/new.html.erb %>
+<div class="min-h-screen bg-gray-900 text-white flex flex-col">
+
+  <%# Top bar %>
+  <div class="flex items-center gap-3 px-4 py-4 bg-gray-800">
+    <%= link_to root_path, class: "text-gray-400" do %>←<% end %>
+    <h1 class="font-semibold">New Store Visit</h1>
+  </div>
+
+  <%= form_with model: @scan_session, class: "px-4 py-6 space-y-4" do |f| %>
+    <div>
+      <%= f.label :name, "Session Name", class: "text-sm text-gray-400 block mb-1" %>
+      <%= f.text_field :name,
+            placeholder: "e.g. City Hardware - Apr 2026",
+            class: "w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white" %>
+    </div>
+    <div>
+      <%= f.label :location, "Store / Location", class: "text-sm text-gray-400 block mb-1" %>
+      <%= f.text_field :location,
+            placeholder: "e.g. MG Road, Kolkata",
+            class: "w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white" %>
+    </div>
+    <div>
+      <%= f.label :scanned_on, "Date", class: "text-sm text-gray-400 block mb-1" %>
+      <%= f.date_field :scanned_on,
+            value: Date.today,
+            class: "w-full bg-gray-800 border border-gray-600 rounded-lg px-4 py-3 text-white" %>
+    </div>
+    <%= f.submit "Start Scanning →",
+          class: "w-full bg-blue-600 text-white py-4 rounded-xl font-bold text-lg mt-4" %>
+  <% end %>
+</div>

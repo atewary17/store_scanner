@@ -1,0 +1,53 @@
+<div class="min-h-screen bg-gray-50">
+  <div class="bg-blue-700 text-white px-4 py-5 flex items-center gap-3">
+    <%= link_to products_path, class: "text-blue-200 text-sm" do %>← Products<% end %>
+    <h1 class="text-xl font-bold flex-1 truncate"><%= @product.name %></h1>
+    <%= link_to edit_product_path(@product), class: "text-blue-200 text-sm" do %>Edit<% end %>
+  </div>
+
+  <div class="px-4 py-4 space-y-4">
+    <div class="bg-white rounded-xl shadow-sm p-4">
+      <div class="flex items-start gap-4">
+        <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center text-3xl shrink-0">
+          <%= product_emoji(@product.category) %>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h2 class="font-bold text-gray-800 text-lg leading-tight"><%= @product.name %></h2>
+          <p class="text-gray-500 text-sm"><%= @product.brand %></p>
+          <% if @product.barcode.present? %>
+            <p class="font-mono text-xs text-yellow-600 mt-1 bg-yellow-50 inline-block px-2 py-0.5 rounded">
+              <%= @product.barcode %>
+            </p>
+          <% end %>
+        </div>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-xl shadow-sm divide-y">
+      <% [
+        ['Category',     @product.category],
+        ['Sub-Category', @product.sub_category],
+        ['Unit / Size',  @product.unit],
+        ['Barcode Type', @product.barcode_type],
+        ['Source',       @product.source],
+      ].each do |label, value| %>
+        <% next if value.blank? %>
+        <div class="px-4 py-3 flex justify-between">
+          <span class="text-sm text-gray-500"><%= label %></span>
+          <span class="text-sm text-gray-800 font-medium"><%= value %></span>
+        </div>
+      <% end %>
+    </div>
+
+    <% if @product.description.present? %>
+      <div class="bg-white rounded-xl shadow-sm p-4">
+        <p class="text-xs text-gray-500 uppercase font-semibold mb-1">Description</p>
+        <p class="text-sm text-gray-700"><%= @product.description %></p>
+      </div>
+    <% end %>
+
+    <p class="text-xs text-gray-400 text-center">
+      Added <%= time_ago_in_words(@product.created_at) %> ago
+    </p>
+  </div>
+</div>

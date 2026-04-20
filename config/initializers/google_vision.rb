@@ -1,0 +1,4 @@
+# config/initializers/google_vision.rb
+if ENV['GOOGLE_CLOUD_CREDENTIALS'].present?
+  ENV['GOOGLE_APPLICATION_CREDENTIALS'] = ENV['GOOGLE_CLOUD_CREDENTIALS']
+end
