@@ -1,7 +1,7 @@
-// app/javascript/scanner_ui.js
 import { BrowserMultiFormatReader } from '@zxing/browser';
 
 const reader = new BrowserMultiFormatReader();
+let scanControls   = null;
 let currentBarcode     = '';
 let currentBarcodeType = '';
 let currentSource      = 'manual';
@@ -11,17 +11,24 @@ window.startScanning = function () {
   setStatus('🔍 Scanning… point at barcode or QR code');
   reader.decodeFromVideoDevice(null, 'scanner-video', (result, err) => {
     if (result) {
-      reader.reset();
+      scanControls?.stop();
+      scanControls = null;
       handleScan(result.getText(), result.getBarcodeFormat().toString());
     }
+  }).then(controls => {
+    scanControls = controls;
   }).catch(err => {
-    setStatus('❌ Camera error: ' + (err?.message || err));
-    console.error('Camera error:', err);
+    const msg = err?.name === 'NotAllowedError'
+      ? '❌ Camera permission denied — tap the lock icon in the address bar to allow it'
+      : '❌ Camera error: ' + (err?.message || err);
+    setStatus(msg);
+    logApi('Camera', 'error', err?.message || String(err));
   });
 };
 
 window.stopScanning = function () {
-  reader.reset();
+  scanControls?.stop();
+  scanControls = null;
   setStatus('Tap "Scan Barcode" to start');
 };
 
@@ -32,22 +39,27 @@ async function handleScan(barcode, format) {
   navigator.vibrate && navigator.vibrate([80]);
   setStatus(`✓ Detected: ${barcode}`);
 
-  openApprovalPanel({ barcode, barcode_type: format }, 'looking_up');
+  openApprovalPanel({ barcode, barcode_type: format }, 'Looking up…', 'bg-gray-700');
+  logApi('Lookup', 'pending', `Barcode: ${barcode}`);
 
   try {
     const res  = await post('/scans/lookup', { barcode, barcode_type: format });
     const data = await res.json();
 
     if (data.found) {
+      logApi('Lookup', 'success', `Found in DB: ${data.product?.name}`);
       fillApprovalPanel(data.product, 'Your Database 💾', 'bg-blue-700');
     } else if (data.api_suggestion) {
+      logApi('Lookup', 'success', `API hit (${data.api_suggestion.source}): ${data.api_suggestion.name}`);
       fillApprovalPanel(data.api_suggestion, `API: ${data.api_suggestion.source} 🌐`, 'bg-green-700');
       document.getElementById('ocr-trigger').classList.add('hidden');
     } else {
+      logApi('Lookup', 'warn', 'Not found in DB or any API');
       fillApprovalPanel({ barcode, barcode_type: format }, 'Not Found ⚠️', 'bg-red-800');
       document.getElementById('ocr-trigger').classList.remove('hidden');
     }
   } catch (e) {
+    logApi('Lookup', 'error', e?.message || String(e));
     setFieldValue('field-name', 'Network error — fill manually');
   }
 }
@@ -55,18 +67,16 @@ async function handleScan(barcode, format) {
 // ── Approval panel ────────────────────────────────
 function openApprovalPanel(data, sourceLabel, badgeClass) {
   document.getElementById('approval-panel').classList.remove('hidden');
-  fillApprovalPanel(data, sourceLabel || 'Looking up…', badgeClass || 'bg-gray-700');
+  fillApprovalPanel(data, sourceLabel, badgeClass);
 }
 
 function fillApprovalPanel(data, sourceLabel, badgeClass) {
   currentSource = data.source || 'manual';
 
-  // Badge
   const badge = document.getElementById('approval-source-badge');
   badge.textContent = sourceLabel;
   badge.className   = `text-xs font-bold px-3 py-1 rounded-full text-white ${badgeClass}`;
 
-  // Fields
   setFieldValue('field-barcode',      data.barcode      || currentBarcode);
   setFieldValue('field-barcode-type', data.barcode_type || currentBarcodeType);
   setFieldValue('field-name',         data.name         || '');
@@ -74,7 +84,6 @@ function fillApprovalPanel(data, sourceLabel, badgeClass) {
   setFieldValue('field-unit',         data.unit         || '');
   setFieldValue('field-description',  data.description  || '');
 
-  // Category select
   const catSelect = document.getElementById('field-category');
   if (data.category) {
     const opt = [...catSelect.options].find(o =>
@@ -100,34 +109,39 @@ window.handleOCRPhoto = async function (event) {
   if (!file) return;
 
   setFieldValue('field-name', '⏳ Analysing with Google Vision…');
+  logApi('OCR', 'pending', 'Uploading photo…');
 
   const form = new FormData();
   form.append('photo',   file);
   form.append('barcode', currentBarcode);
 
-  const res  = await fetch('/scans/ocr_lookup', {
-    method:  'POST',
-    headers: { 'X-CSRF-Token': csrfToken() },
-    body:    form
-  });
-  const data = await res.json();
+  try {
+    const res  = await fetch('/scans/ocr_lookup', {
+      method:  'POST',
+      headers: { 'X-CSRF-Token': csrfToken() },
+      body:    form
+    });
+    const data = await res.json();
 
-  if (data.success) {
-    fillApprovalPanel(data.data, 'Google Vision OCR 🔬', 'bg-purple-700');
-    document.getElementById('ocr-trigger').classList.add('hidden');
-  } else {
+    if (data.success) {
+      logApi('OCR', 'success', `Extracted: ${data.data?.name || '(name not found)'}`);
+      fillApprovalPanel(data.data, 'Google Vision OCR 🔬', 'bg-purple-700');
+      document.getElementById('ocr-trigger').classList.add('hidden');
+    } else {
+      logApi('OCR', 'warn', data.message || 'Could not read label');
+      setFieldValue('field-name', '');
+      alert('OCR could not read label — please type details manually.');
+    }
+  } catch (e) {
+    logApi('OCR', 'error', e?.message || String(e));
     setFieldValue('field-name', '');
-    alert('OCR could not read label — please type details manually.');
   }
 };
 
 // ── Save ──────────────────────────────────────────
 window.saveProduct = async function () {
   const name = document.getElementById('field-name').value.trim();
-  if (!name) {
-    alert('Product name is required');
-    return;
-  }
+  if (!name) { alert('Product name is required'); return; }
 
   const sessionId = document.querySelector('[data-session-id]')?.dataset.sessionId;
 
@@ -147,21 +161,53 @@ window.saveProduct = async function () {
   btn.textContent = 'Saving…';
   btn.disabled    = true;
 
-  const res  = await post('/scans/save', { product, session_id: sessionId });
-  const data = await res.json();
+  logApi('Save', 'pending', `Saving: ${name}`);
 
-  btn.textContent = '✅ Save to Catalogue';
-  btn.disabled    = false;
+  try {
+    const res  = await post('/scans/save', { product, session_id: sessionId });
+    const data = await res.json();
 
-  if (data.success) {
-    closeApproval();
-    addItemToSessionList(data.scan_item);
-    incrementSessionCount();
-    setStatus(`✅ "${data.scan_item.name}" saved! Ready for next item.`);
-  } else {
-    alert('Error: ' + data.errors?.join(', '));
+    btn.textContent = '✅ Save to Catalogue';
+    btn.disabled    = false;
+
+    if (data.success) {
+      logApi('Save', 'success', `Saved: ${data.scan_item.name}`);
+      closeApproval();
+      addItemToSessionList(data.scan_item);
+      incrementSessionCount();
+      setStatus(`✅ "${data.scan_item.name}" saved! Ready for next item.`);
+    } else {
+      logApi('Save', 'error', data.errors?.join(', '));
+      alert('Error: ' + data.errors?.join(', '));
+    }
+  } catch (e) {
+    logApi('Save', 'error', e?.message || String(e));
+    btn.textContent = '✅ Save to Catalogue';
+    btn.disabled    = false;
   }
 };
+
+// ── API log panel ─────────────────────────────────
+function logApi(label, status, detail) {
+  const log = document.getElementById('api-log');
+  if (!log) return;
+
+  const colors = { success: 'text-green-400', error: 'text-red-400', warn: 'text-yellow-400', pending: 'text-blue-400' };
+  const icons  = { success: '✓', error: '✗', warn: '⚠', pending: '…' };
+
+  const row = document.createElement('div');
+  row.className = 'flex gap-2 text-xs font-mono leading-snug';
+  row.innerHTML = `<span class="${colors[status] || 'text-gray-400'}">${icons[status] || '·'}</span>`
+    + `<span class="text-gray-300 font-semibold w-14 shrink-0">${label}</span>`
+    + `<span class="text-gray-400 truncate">${detail}</span>`;
+
+  log.prepend(row);
+
+  // Keep only last 8 entries
+  while (log.children.length > 8) log.removeChild(log.lastChild);
+
+  document.getElementById('api-log-panel')?.classList.remove('hidden');
+}
 
 // ── Session list helpers ──────────────────────────
 function addItemToSessionList(item) {
@@ -179,10 +225,8 @@ function addItemToSessionList(item) {
 }
 
 function incrementSessionCount() {
-  const badge = document.querySelector('.bg-blue-600.text-white.text-xs.font-bold');
-  if (badge) {
-    badge.textContent = (parseInt(badge.textContent) + 1) + ' items';
-  }
+  const badge = document.querySelector('[data-item-count]');
+  if (badge) badge.textContent = (parseInt(badge.textContent) + 1) + ' items';
 }
 
 // ── Utilities ─────────────────────────────────────
@@ -203,10 +247,7 @@ function csrfToken() {
 function post(url, body) {
   return fetch(url, {
     method:  'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken()
-    },
-    body: JSON.stringify(body)
+    headers: { 'Content-Type': 'application/json', 'X-CSRF-Token': csrfToken() },
+    body:    JSON.stringify(body)
   });
 }
