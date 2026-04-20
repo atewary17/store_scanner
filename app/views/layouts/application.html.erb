@@ -5,10 +5,12 @@
   <title>StoreScanner</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#111318">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <link rel="manifest" href="/manifest.json">
   <%= csrf_meta_tags %>
   <%= stylesheet_link_tag "application" %>
+  <%= javascript_include_tag "application", defer: true %>
 </head>
 <body>
   <div class="page">
@@ -18,7 +20,6 @@
     <% end %>
     <%= yield %>
   </div>
-  <%= javascript_include_tag "application" %>
   <script>if('serviceWorker' in navigator) navigator.serviceWorker.register('/service-worker.js')</script>
 </body>
 </html>

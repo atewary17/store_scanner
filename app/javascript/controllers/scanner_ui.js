@@ -14,6 +14,9 @@ window.startScanning = function () {
       reader.reset();
       handleScan(result.getText(), result.getBarcodeFormat().toString());
     }
+  }).catch(err => {
+    setStatus('❌ Camera error: ' + (err?.message || err));
+    console.error('Camera error:', err);
   });
 };
 
