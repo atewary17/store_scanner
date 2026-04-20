@@ -1,12 +1,12 @@
-# config/environments/production.rb
+Rails.application.configure do
+  # Serve static files (Render doesn't have a separate asset server)
+  config.public_file_server.enabled = true
 
-# Serve static files (Render doesn't have a separate asset server)
-config.public_file_server.enabled = true
+  # Log to STDOUT so Render captures it
+  config.logger   = ActiveSupport::Logger.new(STDOUT)
+  config.log_level = :info
 
-# Log to STDOUT so Render captures it
-config.logger = ActiveSupport::Logger.new(STDOUT)
-config.log_level = :info
-
-# Required for asset pipeline
-config.assets.compile = false
-config.assets.digest  = true
+  # Required for asset pipeline
+  config.assets.compile = false
+  config.assets.digest  = true
+end
