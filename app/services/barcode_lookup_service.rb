@@ -1,4 +1,3 @@
-# app/services/barcode_lookup_service.rb
 class BarcodeLookupService
 
   # Ordered cascade — first hit wins
@@ -16,9 +15,7 @@ class BarcodeLookupService
     nil
   end
 
-  # ─────────────────────────────────────────────
-  # 1. Your own DB (fastest, always free)
-  # ─────────────────────────────────────────────
+  # 1. Local DB (fastest, always free)
   def self.query_local_db(barcode)
     product = Product.find_by(barcode: barcode)
     return nil unless product
@@ -30,14 +27,12 @@ class BarcodeLookupService
       unit:        product.unit,
       image_url:   product.image_url,
       source:      'local_db',
-      product_id:  product.id   # already exists, just link it
+      product_id:  product.id
     }
   end
 
-  # ─────────────────────────────────────────────
-  # 2. UPC Item DB — 100/day free, no key needed
-  #    Endpoint: https://api.upcitemdb.com/prod/trial/lookup?upc=BARCODE
-  # ─────────────────────────────────────────────
+  # 2. UPCitemdb — 100/day free, no key needed
+  #    https://api.upcitemdb.com/prod/trial/lookup?upc=BARCODE
   def self.query_upcitemdb(barcode)
     response = HTTParty.get(
       "https://api.upcitemdb.com/prod/trial/lookup",
@@ -45,11 +40,13 @@ class BarcodeLookupService
       headers: {
         'Accept'       => 'application/json',
         'Content-Type' => 'application/json'
-        # Add this if you have a paid key:
-        # 'user_key' => ENV['UPCITEMDB_KEY']
+        # 'user_key' => ENV['UPCITEMDB_KEY']  # uncomment if you have a paid key
       },
       timeout: 5
     )
+
+    remaining = response.headers['X-RateLimit-Remaining']
+    Rails.logger.info "UPCitemdb quota remaining: #{remaining}"
 
     return nil unless response.code == 200
     item = response.parsed_response.dig('items', 0)
@@ -61,13 +58,14 @@ class BarcodeLookupService
       description: item['description'],
       unit:        item['size'],
       image_url:   item.dig('images', 0),
+      source:      'upcitemdb',
       metadata:    {
-        ean:        item['ean'],
-        upc:        item['upc'],
-        category:   item['category'],
-        color:      item['color'],
-        model:      item['model'],
-        weight:     item['weight']
+        ean:      item['ean'],
+        upc:      item['upc'],
+        category: item['category'],
+        color:    item['color'],
+        model:    item['model'],
+        weight:   item['weight']
       }
     }
   rescue HTTParty::Error, Net::OpenTimeout => e
@@ -75,44 +73,44 @@ class BarcodeLookupService
     nil
   end
 
-  # ─────────────────────────────────────────────
   # 3. Go-UPC — 100/month free, needs API key
   #    Register: https://go-upc.com/api
-  #    Endpoint: https://go-upc.com/api/v1/code/BARCODE
-  # ─────────────────────────────────────────────
-# app/services/barcode_lookup_service.rb
-    def self.query_upcitemdb(barcode)
-        response = HTTParty.get(
-            "https://api.upcitemdb.com/prod/trial/lookup",
-            query:   { upc: barcode },
-            headers: { 'Accept' => 'application/json' },
-            timeout: 5
-        )
-        # Log remaining quota so you know where you stand
-        remaining = response.headers['X-RateLimit-Remaining']
-        Rails.logger.info "UPCitemdb quota remaining: #{remaining}"
+  #    Set GO_UPC_KEY env var to enable
+  def self.query_go_upc(barcode)
+    return nil unless ENV['GO_UPC_KEY'].present?
 
-        return nil unless response.code == 200
-        item = response.parsed_response.dig('items', 0)
-        return nil unless item
+    response = HTTParty.get(
+      "https://go-upc.com/api/v1/code/#{barcode}",
+      headers: {
+        'Authorization' => "Bearer #{ENV['GO_UPC_KEY']}",
+        'Accept'        => 'application/json'
+      },
+      timeout: 5
+    )
 
-        {
-            name:        item['title'],
-            brand:       item['brand'],
-            description: item['description'],
-            unit:        item['size'],
-            image_url:   item.dig('images', 0),
-            source:      'upcitemdb'
-        }
-    rescue => e
-        Rails.logger.warn "UPCitemdb error: #{e.message}"
-        nil
-    end
-  # ─────────────────────────────────────────────
+    return nil unless response.code == 200
+    product = response.parsed_response['product']
+    return nil unless product
+
+    {
+      name:        product['name'],
+      brand:       product['brand'],
+      description: product['description'],
+      image_url:   product['imageUrl'],
+      source:      'go_upc',
+      metadata:    {
+        category: product['category'],
+        specs:    product['specs']
+      }
+    }
+  rescue HTTParty::Error, Net::OpenTimeout => e
+    Rails.logger.warn "Go-UPC error: #{e.message}"
+    nil
+  end
+
   # 4. Open Beauty Facts — free, no key
   #    Good for: soap, paint solvents, adhesives
-  #    Endpoint: https://world.openbeautyfacts.org/api/v0/product/BARCODE.json
-  # ─────────────────────────────────────────────
+  #    https://world.openbeautyfacts.org/api/v0/product/BARCODE.json
   def self.query_open_beauty(barcode)
     response = HTTParty.get(
       "https://world.openbeautyfacts.org/api/v0/product/#{barcode}.json",
@@ -130,6 +128,7 @@ class BarcodeLookupService
       brand:       p['brands'],
       description: p['generic_name'],
       image_url:   p['image_url'],
+      source:      'open_beauty',
       metadata:    {
         categories: p['categories'],
         labels:     p['labels']

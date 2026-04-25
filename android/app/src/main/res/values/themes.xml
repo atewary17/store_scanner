@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.StoreScanner" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/blue_700</item>
+        <item name="colorPrimaryVariant">@color/blue_600</item>
+        <item name="colorOnPrimary">@color/text_white</item>
+        <item name="colorSecondary">@color/green_600</item>
+        <item name="android:windowBackground">@color/page_bg</item>
+    </style>
+
+    <!-- Dark theme for scanner / forms -->
+    <style name="Theme.StoreScanner.Dark" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/blue_600</item>
+        <item name="colorOnPrimary">@color/text_white</item>
+        <item name="android:windowBackground">@color/dark_900</item>
+        <item name="android:textColor">@color/text_white</item>
+    </style>
+
+    <!-- Shared text styles -->
+    <style name="TextAppearance.Label" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+
+    <style name="TextAppearance.StatValue" parent="TextAppearance.MaterialComponents.Headline4">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">28sp</item>
+    </style>
+
+    <style name="TextAppearance.DarkLabel" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textColor">@color/dark_600</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:letterSpacing">0.08</item>
+    </style>
+</resources>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dark_900">
+
+    <!-- Dark header -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_800"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="←"
+            android:textColor="@color/dark_600"
+            android:textSize="22sp"
+            android:paddingEnd="12dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="New Store Visit"
+            android:textColor="@color/text_white"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Form -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Session Name -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="SESSION NAME" style="@style/TextAppearance.DarkLabel"
+                android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+            <EditText android:id="@+id/et_name"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/bg_input_dark"
+                android:padding="14dp"
+                android:textColor="@color/text_white"
+                android:hint="e.g. City Hardware - Apr 2026"
+                android:textColorHint="@color/dark_600"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Location -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="STORE / LOCATION" style="@style/TextAppearance.DarkLabel"
+                android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+            <EditText android:id="@+id/et_location"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/bg_input_dark"
+                android:padding="14dp"
+                android:textColor="@color/text_white"
+                android:hint="e.g. GT Road, Asansol"
+                android:textColorHint="@color/dark_600"
+                android:inputType="text"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Date -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="DATE" style="@style/TextAppearance.DarkLabel"
+                android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+            <EditText android:id="@+id/et_date"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/bg_input_dark"
+                android:padding="14dp"
+                android:textColor="@color/text_white"
+                android:textColorHint="@color/dark_600"
+                android:inputType="date"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Notes -->
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:text="NOTES" style="@style/TextAppearance.DarkLabel"
+                android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+            <EditText android:id="@+id/et_notes"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:background="@drawable/bg_input_dark"
+                android:padding="14dp"
+                android:textColor="@color/text_white"
+                android:textColorHint="@color/dark_600"
+                android:hint="Optional notes..."
+                android:inputType="textMultiLine"
+                android:minLines="3"
+                android:gravity="top"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Submit -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_create"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Start Scanning →"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:paddingVertical="16dp"
+                app:cornerRadius="12dp"
+                app:backgroundTint="@color/blue_600" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

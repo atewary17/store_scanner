@@ -332,6 +332,9 @@ GEM
       nio4r (~> 2.0)
     racc (1.8.1)
     rack (3.2.6)
+    rack-cors (3.0.0)
+      logger
+      rack (>= 3.0.14)
     rack-session (2.1.2)
       base64 (>= 0.1.0)
       rack (>= 3.0.0)
@@ -451,10 +454,12 @@ DEPENDENCIES
   image_processing
   jbuilder
   jsbundling-rails
+  jwt
   pagy
   pg (~> 1.1)
   propshaft
   puma (>= 5.0)
+  rack-cors
   rack-timeout
   rails (~> 7.1.6)
   selenium-webdriver

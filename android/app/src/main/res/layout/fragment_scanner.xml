@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/dark_900">
+
+    <!-- ── Header ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/dark_800"
+        android:orientation="horizontal"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/btn_exit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="← Exit"
+            android:textColor="@color/dark_600"
+            android:textSize="13sp"
+            android:paddingEnd="12dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_session_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scanning..."
+                android:textColor="@color/text_white"
+                android:textStyle="bold"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tv_session_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/dark_600"
+                android:textSize="11sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_item_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_badge_blue"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="3dp"
+            android:text="0 items"
+            android:textColor="@color/blue_700"
+            android:textStyle="bold"
+            android:textSize="11sp" />
+    </LinearLayout>
+
+    <!-- ── Camera viewfinder (55% height) ── -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="55"
+        android:background="@android:color/black">
+
+        <androidx.camera.view.PreviewView
+            android:id="@+id/view_finder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Scanner overlay (corner brackets + scan line) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="260dp"
+                android:layout_height="130dp">
+
+                <!-- Corner brackets vector -->
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/bg_scanner_overlay" />
+
+                <!-- Animated scan line -->
+                <View
+                    android:id="@+id/scan_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_gravity="top"
+                    android:background="@color/blue_200"
+                    android:alpha="0.8" />
+            </FrameLayout>
+
+            <!-- Status text under brackets -->
+            <TextView
+                android:id="@+id/tv_scan_status"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Point camera at barcode or QR"
+                android:textColor="@color/blue_200"
+                android:textSize="13sp"
+                android:layout_marginTop="12dp"
+                android:paddingHorizontal="16dp"
+                android:gravity="center" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- ── Action buttons ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/dark_900"
+        android:padding="12dp"
+        android:gravity="center_vertical">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_scan"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="📷  Scan Barcode"
+            android:textStyle="bold"
+            android:textSize="13sp"
+            android:paddingVertical="12dp"
+            app:backgroundTint="@color/blue_600"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_stop"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⏹"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp"
+            app:backgroundTint="@color/dark_700"
+            app:cornerRadius="12dp"
+            android:layout_marginEnd="8dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="✏️"
+            android:paddingHorizontal="14dp"
+            android:paddingVertical="12dp"
+            app:backgroundTint="@color/dark_700"
+            app:cornerRadius="12dp" />
+    </LinearLayout>
+
+    <!-- ── API Log panel (visible after first lookup) ── -->
+    <LinearLayout
+        android:id="@+id/api_log_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_dark_card"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="8dp"
+        android:layout_marginHorizontal="12dp"
+        android:layout_marginBottom="4dp"
+        android:visibility="gone">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="API LOG"
+            android:textColor="@color/dark_600"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="6dp" />
+
+        <LinearLayout
+            android:id="@+id/api_log_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </LinearLayout>
+
+    <!-- ── Session items list ── -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="45"
+        android:orientation="vertical"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="4dp">
+
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="THIS SESSION"
+            android:textColor="@color/dark_600"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.1"
+            android:layout_marginBottom="6dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_session_items"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
+    </LinearLayout>
+
+</LinearLayout>

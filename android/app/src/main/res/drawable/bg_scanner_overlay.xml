@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Semi-transparent overlay with a transparent cut-out centre handled in code.
+     This drawable is for the four corner-bracket lines drawn as a vector. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="260dp"
+    android:height="130dp"
+    android:viewportWidth="260"
+    android:viewportHeight="130">
+
+    <!-- Top-left corner -->
+    <path android:strokeColor="#60a5fa" android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M 24,8 L 8,8 L 8,24" />
+
+    <!-- Top-right corner -->
+    <path android:strokeColor="#60a5fa" android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M 236,8 L 252,8 L 252,24" />
+
+    <!-- Bottom-left corner -->
+    <path android:strokeColor="#60a5fa" android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M 8,106 L 8,122 L 24,122" />
+
+    <!-- Bottom-right corner -->
+    <path android:strokeColor="#60a5fa" android:strokeWidth="4"
+        android:strokeLineCap="round"
+        android:pathData="M 252,106 L 252,122 L 236,122" />
+
+</vector>

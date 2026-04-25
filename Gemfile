@@ -19,6 +19,8 @@ gem 'image_processing'     # For photo uploads (label photos)
 gem 'active_storage_validations'
 gem 'pagy'
 gem 'google-cloud-vision-v1'
+gem 'rack-cors'         # CORS for Android API client
+gem 'jwt'               # JWT auth tokens for API
 
 group :development, :test do
   gem 'dotenv-rails'

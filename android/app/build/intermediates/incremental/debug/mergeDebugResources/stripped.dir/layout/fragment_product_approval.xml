@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Bottom sheet — shown as BottomSheetDialogFragment -->
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/dark_900">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Sheet handle -->
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@color/dark_700"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Header row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Review &amp; Save Product"
+                android:textColor="@color/text_white"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/btn_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✕"
+                android:textColor="@color/dark_600"
+                android:textSize="20sp"
+                android:clickable="true"
+                android:focusable="true" />
+        </LinearLayout>
+
+        <!-- Source badge -->
+        <TextView
+            android:id="@+id/tv_source"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Source: —"
+            android:textColor="@color/text_white"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="4dp"
+            android:background="@drawable/bg_badge_source"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Barcode (read-only) -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="BARCODE *" style="@style/TextAppearance.DarkLabel"
+            android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+        <EditText android:id="@+id/et_barcode"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_dark" android:padding="12dp"
+            android:textColor="@color/amber_400" android:fontFamily="monospace"
+            android:textSize="13sp" android:focusable="false"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Product Name -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="PRODUCT NAME *" style="@style/TextAppearance.DarkLabel"
+            android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+        <EditText android:id="@+id/et_name"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_dark" android:padding="12dp"
+            android:textColor="@color/text_white"
+            android:hint="e.g. Apex Exterior Emulsion"
+            android:textColorHint="@color/dark_600"
+            android:inputType="textCapWords"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Brand -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="BRAND" style="@style/TextAppearance.DarkLabel"
+            android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+        <EditText android:id="@+id/et_brand"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_dark" android:padding="12dp"
+            android:textColor="@color/text_white"
+            android:hint="e.g. Asian Paints"
+            android:textColorHint="@color/dark_600"
+            android:inputType="textCapWords"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Category + Sub-Category (side by side) -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="12dp">
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:layout_marginEnd="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="CATEGORY" style="@style/TextAppearance.DarkLabel"
+                    android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+                <Spinner android:id="@+id/spinner_category"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_dark"
+                    android:padding="12dp"
+                    android:popupBackground="@color/dark_800" />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:layout_marginStart="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="SUB-CATEGORY" style="@style/TextAppearance.DarkLabel"
+                    android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+                <EditText android:id="@+id/et_sub_category"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_dark" android:padding="12dp"
+                    android:textColor="@color/text_white" android:hint="e.g. Wall Paint"
+                    android:textColorHint="@color/dark_600" android:inputType="textCapWords" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Unit/Size + Barcode Type (side by side) -->
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:orientation="horizontal" android:layout_marginBottom="12dp">
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:layout_marginEnd="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="UNIT / SIZE" style="@style/TextAppearance.DarkLabel"
+                    android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+                <EditText android:id="@+id/et_unit"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_dark" android:padding="12dp"
+                    android:textColor="@color/text_white" android:hint="e.g. 20 Ltr"
+                    android:textColorHint="@color/dark_600" android:inputType="text" />
+            </LinearLayout>
+
+            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:layout_marginStart="6dp">
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:text="QTY" style="@style/TextAppearance.DarkLabel"
+                    android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+                <EditText android:id="@+id/et_quantity"
+                    android:layout_width="match_parent" android:layout_height="wrap_content"
+                    android:background="@drawable/bg_input_dark" android:padding="12dp"
+                    android:textColor="@color/text_white" android:text="1"
+                    android:inputType="number" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Description -->
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="DESCRIPTION" style="@style/TextAppearance.DarkLabel"
+            android:textColor="@color/dark_600" android:layout_marginBottom="4dp" />
+        <EditText android:id="@+id/et_description"
+            android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:background="@drawable/bg_input_dark" android:padding="12dp"
+            android:textColor="@color/text_white"
+            android:hint="Optional product notes..."
+            android:textColorHint="@color/dark_600"
+            android:inputType="textMultiLine"
+            android:minLines="2"
+            android:gravity="top"
+            android:layout_marginBottom="16dp" />
+
+        <!-- OCR trigger (shown when not found) -->
+        <LinearLayout
+            android:id="@+id/ocr_trigger"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:layout_marginBottom="12dp">
+
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="Not found in any database. Photograph the label to extract details automatically."
+                android:textColor="@color/orange_600" android:textSize="12sp"
+                android:layout_marginBottom="8dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_ocr"
+                android:layout_width="match_parent" android:layout_height="wrap_content"
+                android:text="📷  Use Google Vision OCR"
+                android:textStyle="bold"
+                android:paddingVertical="12dp"
+                app:backgroundTint="@color/orange_600"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
+
+        <!-- Progress -->
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Save button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_save"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="✅  Save to Catalogue"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:paddingVertical="14dp"
+            app:backgroundTint="@color/green_600"
+            app:cornerRadius="12dp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Skip button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Skip this item"
+            android:textColor="@color/dark_600"
+            android:paddingVertical="12dp"
+            app:backgroundTint="@color/dark_800"
+            app:cornerRadius="12dp" />
+
+    </LinearLayout>
+</ScrollView>

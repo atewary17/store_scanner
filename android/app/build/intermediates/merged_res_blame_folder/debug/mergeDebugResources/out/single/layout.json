@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/fragment_dashboard.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/fragment_dashboard.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/activity_main.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/activity_main.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/item_session.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/item_session.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/item_scan_item.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/item_scan_item.xml"
+    },
+    {
+        "merged": "com.storescanner.app-mergeDebugResources-57:/layout/fragment_new_session.xml",
+        "source": "com.storescanner.app-main-60:/layout/fragment_new_session.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/fragment_new_session.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/fragment_new_session.xml"
+    },
+    {
+        "merged": "com.storescanner.app-mergeDebugResources-57:/layout/fragment_product_approval.xml",
+        "source": "com.storescanner.app-main-60:/layout/fragment_product_approval.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/fragment_product_approval.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/fragment_product_approval.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/fragment_login.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/fragment_login.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/fragment_scanner.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/fragment_scanner.xml"
+    },
+    {
+        "merged": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-mergeDebugResources-57:/layout/fragment_session_list.xml",
+        "source": "/Users/anishtewary/.gradle/daemon/8.9/com.storescanner.app-main-60:/layout/fragment_session_list.xml"
+    }
+]

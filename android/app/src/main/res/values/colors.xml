@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand / Header -->
+    <color name="blue_700">#1d4ed8</color>
+    <color name="blue_600">#2563eb</color>
+    <color name="blue_200">#bfdbfe</color>
+    <color name="blue_100">#dbeafe</color>
+    <color name="blue_50">#eff6ff</color>
+
+    <!-- Status / Accent -->
+    <color name="green_600">#16a34a</color>
+    <color name="green_200">#bbf7d0</color>
+    <color name="purple_600">#9333ea</color>
+    <color name="purple_200">#e9d5ff</color>
+    <color name="orange_600">#ea580c</color>
+    <color name="orange_200">#fed7aa</color>
+    <color name="red_600">#dc2626</color>
+    <color name="red_800">#991b1b</color>
+    <color name="amber_400">#e8a020</color>
+
+    <!-- Dark theme (scanner, approval, forms) -->
+    <color name="dark_900">#111827</color>
+    <color name="dark_800">#1f2937</color>
+    <color name="dark_700">#374151</color>
+    <color name="dark_600">#4b5563</color>
+
+    <!-- Light theme text -->
+    <color name="text_primary">#111827</color>
+    <color name="text_secondary">#6b7280</color>
+    <color name="text_dim">#9ca3af</color>
+    <color name="text_white">#ffffff</color>
+
+    <!-- Light theme surfaces -->
+    <color name="page_bg">#f9fafb</color>
+    <color name="card_bg">#ffffff</color>
+    <color name="gray_100">#f3f4f6</color>
+    <color name="gray_200">#e5e7eb</color>
+    <color name="border_light">#d1d5db</color>
+
+    <!-- Aliases -->
+    <color name="primary">@color/blue_700</color>
+    <color name="primary_dark">@color/blue_600</color>
+    <color name="text_blue_200">@color/blue_200</color>
+</resources>
