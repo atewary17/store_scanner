@@ -1,0 +1,4 @@
+com.storescanner.test.app-androidTest-0 /Users/anishtewary/Projects/store_scanner/android/app/build/generated/res/resValues/androidTest/debug
+com.storescanner.test.app-mergeDebugAndroidTestResources-1 /Users/anishtewary/Projects/store_scanner/android/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/merged.dir
+com.storescanner.test.app-mergeDebugAndroidTestResources-2 /Users/anishtewary/Projects/store_scanner/android/app/build/intermediates/incremental/debugAndroidTest/mergeDebugAndroidTestResources/stripped.dir
+com.storescanner.test.app-debugAndroidTest-3 /Users/anishtewary/Projects/store_scanner/android/app/build/intermediates/merged_res/debugAndroidTest/mergeDebugAndroidTestResources

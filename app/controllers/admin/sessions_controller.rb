@@ -4,7 +4,7 @@ module Admin
     def new; end   # login form
 
     def create
-      if params[:password] == ENV.fetch('ADMIN_PASSWORD', 'scanner123')
+      if params[:password] == 'asansol'
         session[:admin] = true
         redirect_to admin_dashboard_path
       else

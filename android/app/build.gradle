@@ -15,7 +15,7 @@ android {
         versionName "1.0"
 
         // Set your Rails API base URL here (update for production)
-        buildConfigField "String", "API_BASE_URL", "\"http://10.0.2.2:3000/api/v1/\""
+        buildConfigField "String", "API_BASE_URL", "\"https://store-scanner-le92.onrender.com/api/v1/\""
     }
 
     buildTypes {
